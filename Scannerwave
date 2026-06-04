@@ -1,4 +1,3 @@
-# .github/workflows/wave3_scanner.yml
 name: Wave3 Scanner
 
 on:
@@ -23,8 +22,20 @@ jobs:
       - name: Install dependencies
         run: pip install requests pandas numpy
 
+      - name: Restore state
+        uses: actions/cache@v4
+        with:
+          path: last_signals.json
+          key: scanner-state
+
       - name: Run scanner
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT:  ${{ secrets.TELEGRAM_CHAT }}
         run: python scanner.py
+
+      - name: Save state
+        uses: actions/cache@v4
+        with:
+          path: last_signals.json
+          key: scanner-state
